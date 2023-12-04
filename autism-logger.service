@@ -7,6 +7,7 @@ User=root
 WorkingDirectory=/root/autism-logger/
 ExecStart=/usr/bin/npm start
 Restart=on-failure
+Environment=LOG_DIR=/media/autism-logger
 
 [Install]
 WantedBy=multi-user.target

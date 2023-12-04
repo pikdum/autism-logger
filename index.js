@@ -30,7 +30,13 @@ const handleFrame = (frame) => {
         log = `${timestamp}: ${type} - ${id} [${title}]`;
       }
 
-      fs.appendFile(`${timestamp.slice(0, 10)}.log`, log + "\n", () => {});
+      // use LOG_DIR env var if set, otherwise use current directory
+      const logDir = process.env.LOG_DIR || ".";
+      fs.appendFile(
+        `${logDir}/${timestamp.slice(0, 10)}.log`,
+        log + "\n",
+        () => {},
+      );
     }
   } catch (error) {
     // ignore errors
