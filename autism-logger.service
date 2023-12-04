@@ -1,0 +1,12 @@
+[Unit]
+Description=Autism Logger
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/root/autism-logger/
+ExecStart=/usr/bin/npm start
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
