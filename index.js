@@ -9,6 +9,56 @@ const parseMessage = (input) => {
   };
 };
 
+// https://github.com/calzoneman/sync/blob/227244e2d0420a20afe4acb0ac7adf7610db6233/src/utilities.js#L180
+const formatLink = (id, type) => {
+  switch (type) {
+    case "yt":
+      return "https://youtu.be/" + id;
+    case "vi":
+      return "https://vimeo.com/" + id;
+    case "dm":
+      return "https://dailymotion.com/video/" + id;
+    case "sc":
+      return id;
+    case "li":
+      return "https://livestream.com/" + id;
+    case "tw":
+      return "https://twitch.tv/" + id;
+    case "rt":
+      return id;
+    case "gd":
+      return "https://docs.google.com/file/d/" + id;
+    case "fi":
+      return id;
+    case "hl":
+      return id;
+    case "sb":
+      return "https://streamable.com/" + id;
+    case "tc":
+      return "https://clips.twitch.tv/" + id;
+    case "cm":
+      return id;
+    case "pt": {
+      const [domain, uuid] = id.split(";");
+      return `https://${domain}/videos/watch/${uuid}`;
+    }
+    case "bc":
+      return `https://www.bitchute.com/video/${id}/`;
+    case "bn": {
+      const [artist, track] = id.split(";");
+      return `https://${artist}.bandcamp.com/track/${track}`;
+    }
+    case "od": {
+      const [user, video] = id.split(";");
+      return `https://odysee.com/@${user}/${video}`;
+    }
+    case "nv":
+      return `https://www.nicovideo.jp/watch/${id}`;
+    default:
+      return "";
+  }
+};
+
 const handleFrame = (frame) => {
   try {
     const parsedMessage = parseMessage(frame.payload);
@@ -18,17 +68,7 @@ const handleFrame = (frame) => {
       const { id, title, type } = data;
 
       const timestamp = new Date().toISOString();
-
-      let log;
-      if (type === "yt") {
-        log = `${timestamp}: https://www.youtube.com/watch?v=${id} [${title}]`;
-      } else if (type === "nv") {
-        log = `${timestamp}: https://www.nicovideo.jp/watch/${id} [${title}]`;
-      } else if (type === "fi") {
-        log = `${timestamp}: ${id} [${title}]`;
-      } else {
-        log = `${timestamp}: ${type} - ${id} [${title}]`;
-      }
+      const log = `${timestamp}: ${formatLink(id, type)} [${title}]`;
 
       // use LOG_DIR env var if set, otherwise use current directory
       const logDir = process.env.LOG_DIR || ".";
