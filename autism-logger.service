@@ -6,7 +6,10 @@ After=network.target
 User=root
 WorkingDirectory=/root/autism-logger/
 ExecStart=/usr/bin/npm start
-Restart=on-failure
+Restart=always
+RestartSec=30
+StartLimitBurst=0
+StartLimitInterval=0
 Environment=LOG_DIR=/media/autism-logger
 
 [Install]
