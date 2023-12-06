@@ -1,6 +1,8 @@
 const { chromium } = require("playwright");
 const fs = require("fs");
 
+let stalledTimeout;
+
 const parseMessage = (input) => {
   const [, eventName, eventData] = input.match(/\["([^"]+)",(.+)]/);
   return {
@@ -65,7 +67,17 @@ const handleFrame = (frame) => {
     if (parsedMessage.eventName === "changeMedia") {
       const data = parsedMessage.eventData;
       console.log("changeMedia", data);
-      const { id, title, type } = data;
+      const { id, title, type, seconds } = data;
+
+      // exit if no messages for video duration + 1 minute
+      // probably means it's stuck
+      stalledTimeout = setTimeout(
+        () => {
+          console.log("Exiting: WebSocket activity stalled");
+          process.exit(1);
+        },
+        (seconds + 60) * 1000,
+      );
 
       const timestamp = new Date().toISOString();
       const log = `${timestamp}: ${formatLink(id, type)} [${title}]`;
