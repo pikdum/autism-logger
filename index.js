@@ -71,6 +71,7 @@ const handleFrame = (frame) => {
 
       // exit if no messages for video duration + 1 minute
       // probably means it's stuck
+      clearTimeout(stalledTimeout);
       stalledTimeout = setTimeout(
         () => {
           console.log("Exiting: WebSocket activity stalled");
